@@ -1,0 +1,65 @@
+class NumberToWord extends Controller
+{
+    protected $incorrect = [
+        'հարյուր',
+        'հազար',
+        'միլիար',
+    ];
+    protected $correct = [
+        ' հարյուր',
+        ' հազար',
+        'միլիարդ',
+    ];
+    protected $currency = ' դրամ';
+    protected $coin = ' լումա';
+
+    function convertNumberToWord(Request $request)
+    {
+        $numberToText = round($request->number_to_text, 3);
+        $num = str_replace(',', '.', $numberToText);
+        $parts = explode('.', $num);
+        $response = '';
+        if (count($parts) > 1){
+            for ($i=0; $i<count($parts); $i++){
+                $response .= $this->getText($parts[$i]);
+                if (count($parts) - 2 === $i){
+                    $response .= $this->currency . ' ';
+                }
+                if (count($parts) - 1 === $i){
+                    $response .= $this->coin;
+                }
+            }
+        }else{
+            $response .= $this->getText($parts[0]);
+            $response .= $this->currency;
+        }
+        return $response;
+    }
+
+    private function getText($number){
+        $textReady = '';
+        if (is_numeric($number)){
+            $f = new NumberFormatter("hy", NumberFormatter::SPELLOUT);
+            $textReady = $f->format($number);
+            if (strpos($textReady, 'մեկ') === 0){
+                $incorrect = [
+                    'մեկ հարյուր',
+                    'մեկ հազար',
+                    'հարյուր',
+                    'հազար',
+                    'միլիար',
+                ];
+                $correct = [
+                    'հարյուր',
+                    'հազար',
+                    ' հարյուր',
+                    ' հազար',
+                    'միլիարդ',
+                ];
+                $textReady = str_replace($incorrect, $correct, $textReady);
+            }
+            $textReady = str_replace($this->incorrect, $this->correct, $textReady);
+        }
+        return $textReady;
+    }
+}
