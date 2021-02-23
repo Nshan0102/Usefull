@@ -418,14 +418,21 @@
     }
 
     function copyToClipboard(containerId) {
-        let range = document.createRange();
-        let node = document.querySelector(containerId);
-        range.selectNode(node);
-        window.getSelection().removeAllRanges();
-        window.getSelection().addRange(range);
-        document.execCommand("copy");
-        window.getSelection().removeAllRanges();
-        toastr['success']('Text has been copied, now paste in the text-area!');
+        let text = $(branch).val();
+        if (text.length > 0) {
+            let range = document.createRange();
+            let node = document.querySelector(containerId);
+            range.selectNode(node);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand("copy");
+            window.getSelection().removeAllRanges();
+            toastr['success']('Text has been copied!');
+        }
+        setTimeout(function () {
+            $(branch).blur();
+            $(branch).focus();
+        }, 1);
     }
 </script>
 </body>
