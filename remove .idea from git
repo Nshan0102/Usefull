@@ -1,0 +1,13 @@
+git rm -rf .idea
+git commit -m "delete .idea"
+git push
+
+To remove the "fatal: pathspec '.idea' did not match any files" just use if the dir still returns as untracked:
+git clean -f -d .idea
+
+OR THE BEST SOLUTION TO IGNORE ALL .idea/ folders from all projects
+
+git config --global core.excludesfile ~/.gitignore_global
+nano ~/.gitignore_global
+And put .idea/ into it
+save it and You are done.
